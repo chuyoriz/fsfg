@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { getAnimeInfo, AnimeInfo } from '@/lib/api'
 
@@ -41,12 +40,7 @@ export default async function AnimeDetailPage({ params }: { params: { id: string
         </div>
 
         <div className="relative z-10 px-6 md:px-12 lg:px-24 pb-16 w-full">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="max-w-3xl"
-          >
+          <div className="max-w-3xl">
             {anime.genres && anime.genres.length > 0 && (
               <div className="flex gap-2 mb-6 flex-wrap">
                 {anime.genres.slice(0, 4).map((g) => (
@@ -91,7 +85,7 @@ export default async function AnimeDetailPage({ params }: { params: { id: string
                 + My List
               </button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -102,11 +96,7 @@ export default async function AnimeDetailPage({ params }: { params: { id: string
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {anime.episodes.map((episode) => (
               <Link key={episode.id} href={`/watch/${anime.id}/${episode.id}`}>
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.2 }}
-                  className="p-5 bg-card-dark rounded-lg hover:bg-white/5 transition-all cursor-pointer group border border-white/10 hover:border-white/30"
-                >
+                <div className="p-5 bg-card-dark rounded-lg hover:bg-white/5 transition-all cursor-pointer group border border-white/10 hover:border-white/30 hover:-translate-y-1">
                   <div className="flex justify-between items-start">
                     <h3 className="font-semibold text-gray-200 group-hover:text-white transition-colors">
                       Episode {episode.number}
@@ -115,7 +105,7 @@ export default async function AnimeDetailPage({ params }: { params: { id: string
                   {episode.title && (
                     <p className="text-gray-400 text-sm line-clamp-2 mt-2">{episode.title}</p>
                   )}
-                </motion.div>
+                </div>
               </Link>
             ))}
           </div>

@@ -1,6 +1,3 @@
-'use client'
-
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { animeList } from '@/data/animeList'
 import { notFound } from 'next/navigation'
@@ -24,12 +21,7 @@ export default function WatchPage({ params }: { params: { id: string; episode: s
   return (
     <div className="min-h-screen py-20 bg-black">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-6"
-        >
+        <div className="mb-6">
           <Link href={`/anime/${anime.id}`} className="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-4 transition-colors">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -39,16 +31,11 @@ export default function WatchPage({ params }: { params: { id: string; episode: s
 
           <h1 className="text-2xl md:text-3xl font-bold mb-1 text-gray-200">{anime.title}</h1>
           <p className="text-base text-gray-400">Episode {episodeNum}: {currentEpisode.title}</p>
-        </motion.div>
+        </div>
 
         <div className="grid lg:grid-cols-4 gap-6">
           {/* Video Player */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="lg:col-span-3"
-          >
+          <div className="lg:col-span-3">
             {/* Player */}
             <div className="aspect-video bg-black rounded-lg overflow-hidden flex items-center justify-center border border-white/10">
               <div className="text-center">
@@ -90,14 +77,10 @@ export default function WatchPage({ params }: { params: { id: string; episode: s
                 </Link>
               )}
             </div>
-          </motion.div>
+          </div>
 
           {/* Episode Sidebar */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
+          <div>
             <div className="bg-card-dark rounded-lg p-5 sticky top-24 border border-white/10">
               <h3 className="text-lg font-semibold mb-4 text-gray-200">Episodes</h3>
               <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto pr-2">
@@ -118,7 +101,7 @@ export default function WatchPage({ params }: { params: { id: string; episode: s
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>

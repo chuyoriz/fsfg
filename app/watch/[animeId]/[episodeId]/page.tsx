@@ -8,8 +8,6 @@ import { getAnimeInfo, getStreamingData, AnimeInfo, StreamingData } from '@/lib/
 import VideoPlayer from '@/components/VideoPlayer'
 import VideoJSPlayer from '@/components/VideoJSPlayer'
 
-export const runtime = 'edge'
-
 type ServerType = 'vidcloud' | 'streamsb' | 'vidstreaming' | 'streamtape'
 
 const SERVERS: { name: string; value: ServerType }[] = [
