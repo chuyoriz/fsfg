@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { animeList } from '@/data/animeList'
 import { notFound } from 'next/navigation'
 
+export const runtime = 'edge'
+
 export default function WatchPage({ params }: { params: { id: string; episode: string } }) {
   const anime = animeList.find(a => a.id === parseInt(params.id))
   const episodeNum = parseInt(params.episode)
