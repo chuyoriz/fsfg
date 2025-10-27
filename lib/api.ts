@@ -47,8 +47,15 @@ export interface StreamingData {
 export async function searchAnime(query: string): Promise<AnimeResult[]> {
   try {
     const res = await fetch(`${API_BASE}/${encodeURIComponent(query)}`, {
-      next: { revalidate: 3600 } // Cache 1 hour
+      next: { revalidate: 3600 }, // Cache 1 hour
+      headers: {
+        'Accept': 'application/json'
+      }
     })
+    if (!res.ok) {
+      console.error('Search API error:', res.status)
+      return []
+    }
     const data = await res.json()
     return data.results || []
   } catch (error) {
@@ -60,11 +67,18 @@ export async function searchAnime(query: string): Promise<AnimeResult[]> {
 // Get anime info & episodes
 export async function getAnimeInfo(id: string): Promise<AnimeInfo | null> {
   try {
-    const url = `${API_BASE}/info?id=${encodeURIComponent(id)}`
+    const url = `${API_BASE}/info/${encodeURIComponent(id)}`
     console.log('[API] Fetching anime info:', url)
     const res = await fetch(url, {
-      next: { revalidate: 3600 }
+      next: { revalidate: 3600 },
+      headers: {
+        'Accept': 'application/json'
+      }
     })
+    if (!res.ok) {
+      console.error('Info API error:', res.status)
+      return null
+    }
     const data = await res.json()
     console.log('[API] Anime info response:', data)
     return data
@@ -77,11 +91,18 @@ export async function getAnimeInfo(id: string): Promise<AnimeInfo | null> {
 // Get streaming links
 export async function getStreamingData(episodeId: string, server: string = 'vidcloud'): Promise<StreamingData | null> {
   try {
-    const url = `${API_BASE}/watch?episodeId=${encodeURIComponent(episodeId)}&server=${server}`
+    const url = `${API_BASE}/watch/${encodeURIComponent(episodeId)}?server=${server}`
     console.log('[API] Fetching stream data:', url)
     const res = await fetch(url, {
-      next: { revalidate: 0 } // No cache for streaming
+      cache: 'no-store', // No cache for streaming
+      headers: {
+        'Accept': 'application/json'
+      }
     })
+    if (!res.ok) {
+      console.error('Stream API error:', res.status)
+      return null
+    }
     const data = await res.json()
     console.log('[API] Stream data response:', data)
     return data
