@@ -92,7 +92,7 @@ export default function Home() {
             <div className="flex justify-center py-12">
               <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
             </div>
-          ) : (
+          ) : recentAnime && recentAnime.length > 0 ? (
             <>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
                 {recentAnime.map((anime, index) => (
@@ -149,6 +149,13 @@ export default function Home() {
                 </button>
               </div>
             </>
+          ) : (
+            <div className="flex justify-center py-12">
+              <div className="text-center">
+                <p className="text-gray-400 text-lg">No recent episodes found</p>
+                <p className="text-gray-500 text-sm mt-2">Please try again later</p>
+              </div>
+            </div>
           )}
         </motion.div>
       </section>

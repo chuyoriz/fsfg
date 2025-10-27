@@ -47,15 +47,8 @@ export interface StreamingData {
 export async function searchAnime(query: string): Promise<AnimeResult[]> {
   try {
     const res = await fetch(`${API_BASE}/${encodeURIComponent(query)}`, {
-      next: { revalidate: 3600 }, // Cache 1 hour
-      headers: {
-        'Accept': 'application/json'
-      }
+      next: { revalidate: 3600 } // Cache 1 hour
     })
-    if (!res.ok) {
-      console.error('Search API error:', res.status)
-      return []
-    }
     const data = await res.json()
     return data.results || []
   } catch (error) {
@@ -67,18 +60,11 @@ export async function searchAnime(query: string): Promise<AnimeResult[]> {
 // Get anime info & episodes
 export async function getAnimeInfo(id: string): Promise<AnimeInfo | null> {
   try {
-    const url = `${API_BASE}/info/${encodeURIComponent(id)}`
+    const url = `${API_BASE}/info?id=${encodeURIComponent(id)}`
     console.log('[API] Fetching anime info:', url)
     const res = await fetch(url, {
-      next: { revalidate: 3600 },
-      headers: {
-        'Accept': 'application/json'
-      }
+      next: { revalidate: 3600 }
     })
-    if (!res.ok) {
-      console.error('Info API error:', res.status)
-      return null
-    }
     const data = await res.json()
     console.log('[API] Anime info response:', data)
     return data
@@ -91,18 +77,11 @@ export async function getAnimeInfo(id: string): Promise<AnimeInfo | null> {
 // Get streaming links
 export async function getStreamingData(episodeId: string, server: string = 'vidcloud'): Promise<StreamingData | null> {
   try {
-    const url = `${API_BASE}/watch/${encodeURIComponent(episodeId)}?server=${server}`
+    const url = `${API_BASE}/watch?episodeId=${encodeURIComponent(episodeId)}&server=${server}`
     console.log('[API] Fetching stream data:', url)
     const res = await fetch(url, {
-      cache: 'no-store', // No cache for streaming
-      headers: {
-        'Accept': 'application/json'
-      }
+      next: { revalidate: 0 } // No cache for streaming
     })
-    if (!res.ok) {
-      console.error('Stream API error:', res.status)
-      return null
-    }
     const data = await res.json()
     console.log('[API] Stream data response:', data)
     return data
@@ -112,20 +91,40 @@ export async function getStreamingData(episodeId: string, server: string = 'vidc
   }
 }
 
+export interface RecentAnimeResponse {
+  results: AnimeResult[]
+  hasNextPage: boolean
+  currentPage: number
+}
+
 // Get recent anime with pagination
-export async function getRecentAnime(page: number = 1): Promise<{ results: AnimeResult[], hasNextPage: boolean, currentPage: number }> {
+export async function getRecentAnime(page: number = 1): Promise<RecentAnimeResponse> {
   try {
-    const res = await fetch(`${API_BASE}/recent-episodes?page=${page}`, {
-      next: { revalidate: 1800 } // Cache 30 min
+    const url = `${API_BASE}/recent-episodes?page=${page}`
+    console.log('[API] Fetching recent anime:', url)
+    const res = await fetch(url, {
+      next: { revalidate: 1800 }, // Cache 30 min
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'AniFlix/1.0'
+      }
     })
+    
+    if (!res.ok) {
+      console.error('[API] Recent anime request failed:', res.status, res.statusText)
+      return { results: [], hasNextPage: false, currentPage: page }
+    }
+    
     const data = await res.json()
+    console.log('[API] Recent anime response:', data)
+    
     return {
       results: data.results || [],
       hasNextPage: data.hasNextPage || false,
       currentPage: data.currentPage || page
     }
   } catch (error) {
-    console.error('Recent error:', error)
-    return { results: [], hasNextPage: false, currentPage: 1 }
+    console.error('[API] Recent anime error:', error)
+    return { results: [], hasNextPage: false, currentPage: page }
   }
 }

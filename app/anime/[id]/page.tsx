@@ -1,35 +1,13 @@
-'use client'
-
-import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
 import { getAnimeInfo, AnimeInfo } from '@/lib/api'
 
-export default function AnimeDetailPage() {
-  const params = useParams()
-  const id = params.id as string
-  const [anime, setAnime] = useState<AnimeInfo | null>(null)
-  const [loading, setLoading] = useState(true)
+export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
 
-  useEffect(() => {
-    if (id) {
-      getAnimeInfo(id)
-        .then(setAnime)
-        .finally(() => setLoading(false))
-    }
-  }, [id])
+export default async function AnimeDetailPage({ params }: { params: { id: string } }) {
+  const anime = await getAnimeInfo(params.id)
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading anime...</p>
-        </div>
-      </div>
-    )
-  }
   if (!anime) {
     return (
       <div className="min-h-screen flex items-center justify-center">
